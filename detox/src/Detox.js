@@ -42,7 +42,7 @@ class Detox {
 
   async init(userParams) {
     const sessionConfig = await this._getSessionConfig();
-    const defaultParams = {launchApp: true, initGlobals: true};
+    const defaultParams = {launchApp: true, initGlobals: true, prepareDevice: true};
     const params = Object.assign(defaultParams, userParams || {});
 
     if (!this.userSession) {
@@ -60,12 +60,17 @@ class Detox {
 
     const deviceDriver = new deviceClass(this.client);
     this.device = new Device(this.deviceConfig, sessionConfig, deviceDriver);
-    await this.device.prepare(params);
+    if (params.prepareDevice) {
+      await this.device.prepare(params);
+    }
 
     if (params.initGlobals) {
       deviceDriver.exportGlobals();
       global.device = this.device;
     }
+
+    return sessionConfig
+
   }
 
   async cleanup() {

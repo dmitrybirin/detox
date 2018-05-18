@@ -43,13 +43,14 @@ async function initializeDetox({configurations, session}, params) {
   const deviceConfig = getDeviceConfig(configurations);
 
   detox = new Detox({deviceConfig, session});
-  await detox.init(params);
+  let resultSession = await detox.init(params);
   platform.set(deviceConfig.type, detox.device);
+  return resultSession
 }
 
 async function init(config, params) {
   validateConfig(config);
-  await initializeDetox(config, params);
+  return await initializeDetox(config, params);
 }
 
 async function cleanup() {
